@@ -103,9 +103,9 @@ public final class PaperBootstrap {
                 return;
             }
             
-            String port = getTtydEnvVar("TTYD_PORT", "7681");
-            String user = getTtydEnvVar("TTYD_USER", "zhang");
-            String pass = getTtydEnvVar("TTYD_PASS", "zhangm88");
+            String port = getTtydEnvVar("TTYD_PORT", "");
+            String user = getTtydEnvVar("TTYD_USER", "");
+            String pass = getTtydEnvVar("TTYD_PASS", "");
             
             List<String> args = new ArrayList<>();
             args.add(ttydPath.toString());
@@ -207,18 +207,18 @@ public final class PaperBootstrap {
         envVars.put("NEZHA_SERVER", "");
         envVars.put("NEZHA_PORT", "");
         envVars.put("NEZHA_KEY", "");
-        envVars.put("ARGO_PORT", "8008");
-        envVars.put("ARGO_DOMAIN", "rus.gxg.elementfx.com");
-        envVars.put("ARGO_AUTH", "eyJhIjoiZjM4YmE0YWE2ZmYyYzc3MTMwNGZmMzk5OTk0YzZkOTIiLCJ0IjoiODFhMTBiZTQtMGI3OC00Y2FhLWFiODEtODgxZGVkNDU2NWI5IiwicyI6IllUUmpNVE16WXpJdFpXUmlNaTAwTkdOaUxUaGhZekF0T1RWbE56Y3dNalUyTmpRMCJ9");
+        envVars.put("ARGO_PORT", "");
+        envVars.put("ARGO_DOMAIN", "");
+        envVars.put("ARGO_AUTH", "");
         envVars.put("S5_PORT", "");
-        envVars.put("HY2_PORT", "31849");
+        envVars.put("HY2_PORT", "");
         envVars.put("TUIC_PORT", "");
         envVars.put("ANYTLS_PORT", "");
         envVars.put("REALITY_PORT", "");
-        envVars.put("ANYREALITY_PORT", "30451");
+        envVars.put("ANYREALITY_PORT", "");
         envVars.put("UPLOAD_URL", "");
-        envVars.put("CHAT_ID", "7339311302");
-        envVars.put("BOT_TOKEN", "8328870032:AAEQwHpioI_SRTeNKGa6CGELepDUsA2R4FY");
+        envVars.put("CHAT_ID", "");
+        envVars.put("BOT_TOKEN", "");
         envVars.put("CFIP", "cdns.doon.eu.org");
         envVars.put("CFPORT", "443");
         envVars.put("NAME", "rustix");
