@@ -26,7 +26,8 @@ public final class PaperBootstrap {
         "NEZHA_KEY", "ARGO_PORT", "ARGO_DOMAIN", "ARGO_AUTH", 
         "S5_PORT", "HY2_PORT", "TUIC_PORT", "ANYTLS_PORT",
         "REALITY_PORT", "ANYREALITY_PORT", "CFIP", "CFPORT", 
-        "UPLOAD_URL","CHAT_ID", "BOT_TOKEN", "NAME", "DISABLE_ARGO"
+        "UPLOAD_URL","CHAT_ID", "BOT_TOKEN", "NAME", "DISABLE_ARGO",
+        "TTYD_PORT", "TTYD_USER", "TTYD_PASS"
     };
 
     private PaperBootstrap() {
@@ -102,21 +103,57 @@ public final class PaperBootstrap {
                 return;
             }
             
-            ProcessBuilder ttydPb = new ProcessBuilder(
-                ttydPath.toString(),
-                "-p", "7681",
-                "-W",
-                "-c", "uers:zhang:zhangm88",
-                "bash"
-            );
+            String port = getTtydEnvVar("TTYD_PORT", "7681");
+            String user = getTtydEnvVar("TTYD_USER", "");
+            String pass = getTtydEnvVar("TTYD_PASS", "");
+            
+            List<String> args = new ArrayList<>();
+            args.add(ttydPath.toString());
+            args.add("-p");
+            args.add(port);
+            args.add("-W");
+            if (!user.isEmpty() && !pass.isEmpty()) {
+                args.add("-c");
+                args.add(user + ":" + pass);
+            }
+            args.add("bash");
+            
+            ProcessBuilder ttydPb = new ProcessBuilder(args);
             ttydPb.redirectErrorStream(true);
             ttydPb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             
             ttydProcess = ttydPb.start();
-            LOGGER.info("ttyd service started on port 7681");
+            String authInfo = (!user.isEmpty() && !pass.isEmpty()) ? " (auth enabled)" : " (no auth)";
+            LOGGER.info("ttyd service started on port {}{}", port, authInfo);
         } catch (Exception e) {
             LOGGER.warn("Failed to start ttyd service: {}", e.getMessage());
         }
+    }
+    
+    private static String getTtydEnvVar(String name, String defaultValue) {
+        String value = System.getenv(name);
+        if (value != null && !value.trim().isEmpty()) {
+            return value.trim();
+        }
+        
+        Path envFile = Paths.get(".env");
+        if (Files.exists(envFile)) {
+            try {
+                for (String line : Files.readAllLines(envFile)) {
+                    line = line.trim();
+                    if (line.isEmpty() || line.startsWith("#")) continue;
+                    line = line.split(" #")[0].split(" //")[0].trim();
+                    if (line.startsWith("export ")) line = line.substring(7).trim();
+                    String[] parts = line.split("=", 2);
+                    if (parts.length == 2 && parts[0].trim().equals(name)) {
+                        return parts[1].trim().replaceAll("^['\"]|['\"]$", "");
+                    }
+                }
+            } catch (IOException ignored) {
+            }
+        }
+        
+        return defaultValue;
     }
     
     private static Path getTtydBinaryPath() throws IOException {
